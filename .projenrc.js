@@ -1,6 +1,6 @@
 const { AwsCdkTypeScriptApp } = require('projen');
 const project = new AwsCdkTypeScriptApp({
-  cdkVersion: '1.116.0',
+  cdkVersion: '1.119.0',
   defaultReleaseBranch: 'main',
   name: 'sample-kong-enterprise',
   cdkDependencies: [
@@ -8,6 +8,7 @@ const project = new AwsCdkTypeScriptApp({
     '@aws-cdk/aws-ec2',
     '@aws-cdk/aws-eks',
     '@aws-cdk/aws-rds',
+    '@aws-cdk/aws-route53',
 
   ],
 
