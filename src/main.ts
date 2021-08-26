@@ -11,6 +11,7 @@ export class KongCpEks extends Stack {
   public readonly control_plane: eks.Cluster;
   public readonly cluster_dns: String;
   public readonly telemetry_dns: String;
+  public readonly private_ca_arn : string;
 
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
@@ -37,6 +38,7 @@ export class KongCpEks extends Stack {
     this.telemetry_dns = kong_control_plane.telemetry_dns;
     this.cluster_dns = kong_control_plane.cluster_dns;
     this.control_plane = kong_control_plane.control_plane;
+    this.private_ca_arn = kong_control_plane.private_ca_arn;
     // define resources here...
   }
 }
@@ -46,6 +48,7 @@ interface KongDpEksStackProps extends StackProps {
   vpc: IVpc;
   cluster_dns: String;
   telemetry_dns: String;
+  private_ca_arn: string;
 
 }
 export class KongDpEks extends Stack {
@@ -67,6 +70,7 @@ export class KongDpEks extends Stack {
       },
       cluster_dns: props.cluster_dns,
       telemetry_dns: props.telemetry_dns,
+      private_ca_arn: props.private_ca_arn,
     });
 
     // define resources here...
@@ -88,6 +92,7 @@ new KongDpEks(app, 'kong-dp', {
   cluster_dns: kong_control_plane.cluster_dns,
   vpc: kong_control_plane.control_plane.vpc,
   telemetry_dns: kong_control_plane.telemetry_dns,
+  private_ca_arn: kong_control_plane.private_ca_arn,
 });
 // new MyStack(app, 'my-stack-prod', { env: prodEnv });
 
