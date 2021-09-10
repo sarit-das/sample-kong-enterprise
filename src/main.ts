@@ -4,8 +4,8 @@ import { EndpointAccess, KubernetesVersion, MachineImageType } from '@aws-cdk/aw
 import * as eks from '@aws-cdk/aws-eks';
 import { PostgresEngineVersion } from '@aws-cdk/aws-rds';
 import { App, Construct, Stack, StackProps } from '@aws-cdk/core';
-import * as KongCP from '../../kong-control-plane/src/eks-index';
-import * as KongDP from '../../kong-data-plane/src/eks-index';
+import * as KongCP from 'kong-control-plane';
+import * as KongDP from 'kong-data-plane';
 // import { KongEksControlPlaneProps } from '../../kong-core/src/kong-core';
 
 const telemetry_dns = 'telemetry.kong-cp.internal';
@@ -19,8 +19,8 @@ export class KongCpEks extends Stack {
     super(scope, id, props);
 
     const kong_control_plane = new KongCP.KongEks(this, 'KongEksCp', {
-      telemetry_dns: telemetry_dns,
-      cluster_dns: cluster_dns,
+      telemetryDns: telemetry_dns,
+      clusterDns: cluster_dns,
       namespace: 'kong',
       controlPlaneClusterProps: {
         clusterName: 'kong-cp',
@@ -42,8 +42,8 @@ export class KongCpEks extends Stack {
 
     // this.telemetry_dns = kong_control_plane.telemetry_dns;
     // this.cluster_dns = kong_control_plane.cluster_dns;
-    this.control_plane = kong_control_plane.control_plane;
-    this.private_ca_arn = kong_control_plane.private_ca_arn;
+    this.control_plane = kong_control_plane.controlPlane;
+    this.private_ca_arn = kong_control_plane.privateCaArn;
     // define resources here...
   }
 }
@@ -70,13 +70,13 @@ export class KongDpEks extends Stack {
       },
       dataPlaneNodeProps: {
         instanceType: InstanceType.of(InstanceClass.T3, InstanceSize.LARGE),
-        machineImageType: MachineImageType.AMAZON_LINUX_2,
+        machineImageType: MachineImageType.BOTTLEROCKET,
         minCapacity: 2,
         updatePolicy: UpdatePolicy.rollingUpdate(),
       },
-      cluster_dns: props.cluster_dns,
-      telemetry_dns: props.telemetry_dns,
-      private_ca_arn: props.private_ca_arn,
+      clusterDns: props.cluster_dns,
+      telemetryDns: props.telemetry_dns,
+      privateCaArn: props.private_ca_arn,
     });
 
     // define resources here...

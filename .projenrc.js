@@ -1,6 +1,6 @@
 const { AwsCdkTypeScriptApp, CdkApprovalLevel } = require('projen');
 const project = new AwsCdkTypeScriptApp({
-  cdkVersion: '1.121.0',
+  cdkVersion: '1.122.0',
   defaultReleaseBranch: 'main',
   name: 'sample-kong-enterprise',
   cdkDependencies: [
@@ -13,6 +13,10 @@ const project = new AwsCdkTypeScriptApp({
 
   ],
   requireApproval: CdkApprovalLevel.NEVER,
+  deps: [
+    'kong-data-plane',
+    'kong-control-plane',
+  ],
 
   // cdkDependencies: undefined,        /* Which AWS CDK modules (those that start with "@aws-cdk/") this app uses. */
   // deps: [],                          /* Runtime dependencies of this module. */
