@@ -1,0 +1,18 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: aws-lambda-test-api
+  # annotations:
+  #   kubernetes.io/ingress.class: kong
+  # labels:
+  #   global: "true"
+config: 
+  aws_key: 
+  aws_secret: 
+  aws_region: us-west-2
+  function_name: kong-api-sample
+  invocation_type: RequestResponse
+  log_type: Tail
+  timeout: 60000
+  keepalive: 60000
+plugin: aws-lambda

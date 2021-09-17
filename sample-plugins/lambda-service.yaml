@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: lambdaroute
+  annotations:
+    kubernetes.io/ingress.class: kong
+    konghq.com/plugins: aws-lambda-test-api
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /lambda
+        backend:
+          serviceName: lambda-service
+          servicePort: 80
