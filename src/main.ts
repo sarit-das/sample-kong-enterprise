@@ -4,23 +4,25 @@ import { EndpointAccess, KubernetesVersion, MachineImageType } from '@aws-cdk/aw
 import * as eks from '@aws-cdk/aws-eks';
 import { PostgresEngineVersion } from '@aws-cdk/aws-rds';
 import { App, Construct, Stack, StackProps } from '@aws-cdk/core';
-import * as KongCP from 'kong-control-plane';
 import * as KongDP from 'kong-data-plane';
+import * as KongCP from '../../kong-cp/src/index';
 // import { KongEksControlPlaneProps } from '../../kong-core/src/kong-core';
 
-const telemetry_dns = 'telemetry.kong-cp.internal';
-const cluster_dns = 'cluster.kong-cp.internal';
+// const telemetry_dns = 'telemetry.kong-cp.internal';
+// const cluster_dns = 'cluster.kong-cp.internal';
 export class KongCpEks extends Stack {
 
   public readonly control_plane: eks.Cluster;
   public readonly private_ca_arn : string;
+  public readonly telemetry_dns : string;
+  public readonly cluster_dns : string;
 
   constructor(scope: Construct, id: string, props: StackProps = {} ) {
     super(scope, id, props);
 
+
     const kong_control_plane = new KongCP.KongEks(this, 'KongEksCp', {
-      telemetryDns: telemetry_dns,
-      clusterDns: cluster_dns,
+      hostedZoneName: 'kong-cp.internal',
       namespace: 'kong',
       controlPlaneClusterProps: {
         clusterName: 'kong-cp',
@@ -40,10 +42,10 @@ export class KongCpEks extends Stack {
       },
     });
 
-    // this.telemetry_dns = kong_control_plane.telemetry_dns;
-    // this.cluster_dns = kong_control_plane.cluster_dns;
     this.control_plane = kong_control_plane.controlPlane;
     this.private_ca_arn = kong_control_plane.privateCaArn;
+    this.telemetry_dns = kong_control_plane.telemetryDns;
+    this.cluster_dns = kong_control_plane.clusterDns;
     // define resources here...
   }
 }
@@ -86,7 +88,7 @@ export class KongDpEks extends Stack {
 // for development, use account/region from cdk cli
 const devEnv = {
   account: process.env.CDK_DEFAULT_ACCOUNT,
-  region: 'us-east-1',
+  region: 'us-east-2',
   // process.env.CDK_DEFAULT_REGION,
 };
 
@@ -95,9 +97,9 @@ const app = new App();
 const kong_control_plane = new KongCpEks(app, 'kong-cp', { env: devEnv });
 new KongDpEks(app, 'kong-dp', {
   env: devEnv,
-  cluster_dns: cluster_dns,
+  cluster_dns: kong_control_plane.cluster_dns,
   vpc: kong_control_plane.control_plane.vpc,
-  telemetry_dns: telemetry_dns,
+  telemetry_dns: kong_control_plane.telemetry_dns,
   private_ca_arn: kong_control_plane.private_ca_arn,
 });
 // new MyStack(app, 'my-stack-prod', { env: prodEnv });

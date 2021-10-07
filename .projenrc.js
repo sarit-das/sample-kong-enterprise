@@ -8,7 +8,6 @@ const project = new AwsCdkTypeScriptApp({
     '@aws-cdk/aws-ec2',
     '@aws-cdk/aws-eks',
     '@aws-cdk/aws-rds',
-    '@aws-cdk/aws-route53',
     '@aws-cdk/aws-autoscaling',
 
   ],

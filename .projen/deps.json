@@ -99,11 +99,6 @@
       "type": "runtime"
     },
     {
-      "name": "@aws-cdk/aws-route53",
-      "version": "^1.122.0",
-      "type": "runtime"
-    },
-    {
       "name": "@aws-cdk/core",
       "version": "^1.122.0",
       "type": "runtime"
